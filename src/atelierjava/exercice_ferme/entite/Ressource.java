@@ -7,9 +7,13 @@ package atelierjava.exercice_ferme.entite;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -19,10 +23,11 @@ import javax.persistence.Id;
 public class Ressource implements Serializable {
     
     public enum TypeRessource { // Le nom de l'enum commence par une majuscule, comme celui d'une classe
-        ANIMAL_MOUTON, // tout en majuscule avec des underscore (certification iso en entreprise)
-        ANIMAL_VACHE, 
-        CULTURE_BLE,
-        CULTURE_MAIS
+        CHEVRE, // tout en majuscule avec des underscore (certification iso en entreprise) 
+        BLE,
+        CAROTTE,
+        FERMIER,
+        FROMAGE
     }
     
     private static final long serialVersionUID = 1L;
@@ -30,8 +35,41 @@ public class Ressource implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // IDENTITY au lieu de AUTO (qui fait qch d'un peu tiré par les cheveux)
     private Long id;    
     
+    @Enumerated(value = EnumType.STRING) // Permet de transformer les numéros attribués à chaque élément de la liste ENUM par leurs noms.
     private TypeRessource designation; // ex : = TypeRessource.CULTURE_BLE;
+    
     private String nom;
+    
+    // Le mapping définit la structure de la base
+    @ManyToOne // L'ordre n'a pas d'importance, mais les @ doivent être au-dessus du jouer.
+    @JoinColumn(name = "joueur_id") // Colonne avec une contrainte forein key dessus (clé étrangère) + Nom de la colonne qu'il va créer dans ressources
+    private Joueur joueur;
+
+    public TypeRessource getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(TypeRessource designation) {
+        this.designation = designation;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public Joueur getJoueur() {
+        return joueur;
+    }
+
+    public void setJoueur(Joueur joueur) {
+        this.joueur = joueur;
+    }
+    
+    
     
 
     public Long getId() {

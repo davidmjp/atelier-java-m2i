@@ -1,34 +1,71 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package atelierjava.exercice_ferme.service;
 
 import atelierjava.exercice_ferme.dao.JoueurDAO;
+import atelierjava.exercice_ferme.dao.RessourceDAO;
 import atelierjava.exercice_ferme.entite.Joueur;
+import atelierjava.exercice_ferme.entite.Ressource;
 
-/**
- *
- * @author Formation
- */
+
 public class JoueurService {
 
     /**
      * pseudo : mini 3 lettres, maxi 8 unique
-     *
      * mdp : mini 5 lettres, maxi 10 au moins une majuscule et un chiffre
      *
      * @param pseudo
      * @param mdp
      */
-    // ALT + SHIFT + O : go to file pour retrouver un fichier du projet
+    
+    public void ajouterRessource(long joueurId, Ressource.TypeRessource typeRessource, long quantite) {
+
+        
+         // "Long" avec un grand L peut contenir "null", mais "long" force la présence d'une valeur
+        // 1. Génère les ressources SI aucune ressource pour ce joueur
+        JoueurDAO dao = new JoueurDAO();
+        Joueur joueur = dao.rechercher(joueurId);
+           
+            for(int i = 0; i < quantite; i++) {
+                Ressource ressource = new Ressource();
+                ressource.setDesignation(typeRessource);
+                ressource.setJoueur(joueur);
+                joueur.getRessourcesPossedees().add(ressource);
+                
+                RessourceDAO ressourceDAO = new RessourceDAO();
+                ressourceDAO.ajouter(ressource);
+                
+            }
+    }
+
+  
+    
+    public void rejoindrePartie(long idJoueur) {
+       
+                   // "Long" avec un grand L peut contenir "null", mais "long" force la présence d'une valeur
+        // 1. Génère les ressources SI aucune ressource pour ce joueur
+        JoueurDAO dao = new JoueurDAO();
+        Joueur joueur = dao.rechercher(idJoueur);
+        if ( joueur.getRessourcesPossedees().isEmpty() ) {
+            
+            // 1. Ajouter 5 carottes
+            this.ajouterRessource(idJoueur, Ressource.TypeRessource.CAROTTE, 5);
+              
+            // 2. Ajouter 5 blés
+            this.ajouterRessource(idJoueur, Ressource.TypeRessource.BLE, 5);
+            
+            // 3. Ajouter 5 chèvres
+            this.ajouterRessource(idJoueur, Ressource.TypeRessource.CHEVRE, 5);
+            
+            // 4. Ajouter 2 fermiers
+            this.ajouterRessource(idJoueur, Ressource.TypeRessource.FERMIER, 2);
+        }
+        
+    } 
+    
     public void inscription(String pseudo, String mdp) {
 
-        // if (pseudo.length() < 3 || pseudo.length() > 8) {
         if (!pseudo.matches(".{3,8}")) {
             throw new RuntimeException("Le pseudo doit être compris entre 3 et 8 caractères.");
-//            System.out.println("Veuillez choisir un mot de passe compris entre 3 et 8 caractères.");
         }
 
         if (!mdp.matches(".{5,10}")) {
@@ -42,10 +79,8 @@ public class JoueurService {
         if (!mdp.matches(".*[0-9].*")) {
             throw new RuntimeException("Le mot de passe doit contenir au moins un chiffre.");
         }
-//        throw new RuntimeException("une erreur a été détectée");
 
-        // pseudo.Character.isLowerCase();
-        //    System.out.println(pseudo.chars().filter(Character::isUpperCase).count()); // Voir dans FermeServiceTest
+
         // Vérifier que le pseudo est encore dispo
         JoueurDAO dao = new JoueurDAO();
         if (dao.existe(pseudo)) {
@@ -59,11 +94,12 @@ public class JoueurService {
         dao.ajouter(ferme);
     }
 
-    public void connexion(String pseudo, String mdp) {
+    public Joueur connexion(String pseudo, String mdp) { // On remplace void par Joueur pour renvoyer tout l'objet pour récupérer l'id
 
         JoueurDAO dao = new JoueurDAO();
-        if (!dao.existe(pseudo, mdp)) {
-            throw new RuntimeException("Echec de connexion");
-        }
+        Joueur j = dao.rechercher(pseudo, mdp);
+        
+        return j;
     }
+
 }

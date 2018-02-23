@@ -6,10 +6,13 @@
 package atelierjava.exercice_ferme.entite;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -26,7 +29,19 @@ public class Joueur implements Serializable {
     private String motDePasse;
     private double budget;
     private String pseudo;
+    
+    @OneToMany(mappedBy = "joueur")
+    private List<Ressource> ressourcesPossedees = new ArrayList<>();
 
+    public List<Ressource> getRessourcesPossedees() {
+        return ressourcesPossedees;
+    }
+
+    public void setRessourcesPossedees(List<Ressource> ressourcesPossedees) {
+        this.ressourcesPossedees = ressourcesPossedees;
+    }
+
+    
     public String getMotDePasse() {
         return motDePasse;
     }
