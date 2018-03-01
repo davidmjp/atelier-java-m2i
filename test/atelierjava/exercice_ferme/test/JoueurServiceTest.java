@@ -3,6 +3,8 @@ package atelierjava.exercice_ferme.test;
 
 import atelierjava.exercice_ferme.dao.JoueurDAO;
 import atelierjava.exercice_ferme.entite.Joueur;
+import atelierjava.exercice_ferme.exception.PseudoExisteException;
+import atelierjava.exercice_ferme.exception.ValidationException;
 import atelierjava.exercice_ferme.service.JoueurService;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -30,7 +32,7 @@ public class JoueurServiceTest {
     }
 
     // @Test
-    public void inscriptionOK() {
+    public void inscriptionOK() throws ValidationException, PseudoExisteException {
 
         JoueurService service = new JoueurService();
         service.inscription("abcd", "1234bB");
@@ -38,7 +40,7 @@ public class JoueurServiceTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void inscriptionKO() {
+    public void inscriptionKO()  throws ValidationException, PseudoExisteException {
         JoueurService service = new JoueurService();
         service.inscription("abcde", "aaaa123");
     }
@@ -51,7 +53,7 @@ public class JoueurServiceTest {
     }
 
     @Test
-    public void connexionOK() {
+    public void connexionOK() throws ValidationException, PseudoExisteException  {
         JoueurService service = new JoueurService();
         service.inscription("abcdef", "1234bB");
         service.connexion("abcdef", "1234bB");
@@ -64,7 +66,7 @@ public class JoueurServiceTest {
     }
     
     @Test
-    public void rejoindrePartieOK() {
+    public void rejoindrePartieOK() throws ValidationException, PseudoExisteException {
         JoueurService service = new JoueurService();
         service.inscription("David", "A13vvv");
         Joueur joueur = service.connexion("David", "A13vvv");
